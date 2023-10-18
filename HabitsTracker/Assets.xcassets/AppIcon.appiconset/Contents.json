@@ -1,0 +1,14 @@
+{
+  "images" : [
+    {
+      "filename" : "DALL·E 2023-10-19 01.34.11 - Illustration of a modern flat design app icon featuring a pie chart filled with habit icons. The background is a soft gradient, and there's a ring aro.png",
+      "idiom" : "universal",
+      "platform" : "ios",
+      "size" : "1024x1024"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
