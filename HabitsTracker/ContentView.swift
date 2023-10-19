@@ -21,7 +21,7 @@ struct ContentView: View {
     // MARK: - Body
     var body: some View {
         NavigationView {
-            habitsListView
+            habitsGridView
                 .navigationBarTitle("Today")
                 .navigationBarItems(trailing: addButton)
         }
@@ -31,14 +31,19 @@ struct ContentView: View {
     }
 
     // MARK: - Computed Views
-    private var habitsListView: some View {
-        List {
-            ForEach(habits.indices, id: \.self) { index in
-                habitRow(for: index)
+    private var habitsGridView: some View {
+            ScrollView {
+                LazyVGrid(columns: [GridItem(.flexible(), spacing: 20), GridItem(.flexible())], spacing: 20) {
+                    ForEach(habits.indices, id: \.self) { index in
+                        habitBox(for: index)
+                            .frame(maxWidth: .infinity)
+                            .background(Color.gray.opacity(0.1))
+                            .cornerRadius(10)
+                    }
+                }
+                .padding()
             }
-            .onDelete(perform: removeHabit)
         }
-    }
 
     private var addButton: some View {
         Button(action: { self.showingAddHabit = true }) {
@@ -47,22 +52,20 @@ struct ContentView: View {
     }
 
     // MARK: - View Functions
-    private func habitRow(for index: Int) -> some View {
-        NavigationLink(destination: HabitDetailView(habit: self.$habits[index])) {
-            HStack {
-                VStack(alignment: .leading) {
-                    Text(self.habits[index].name)
-                    lastCompletedDateText(for: index)
-                }
+    private func habitBox(for index: Int) -> some View {
+            VStack {
+                Text(self.habits[index].name)
+                    .font(.headline)
+                lastCompletedDateText(for: index)
                 Spacer()
                 Text("\(self.habits[index].timesCompleted)回")
             }
+            .padding()
+            .onTapGesture {
+                self.habits[index].complete()
+                self.saveHabits()
+            }
         }
-        .onTapGesture {
-            self.habits[index].complete()
-            self.saveHabits()
-        }
-    }
 
     private func lastCompletedDateText(for index: Int) -> some View {
         if let date = self.habits[index].lastCompletedDate {
@@ -92,6 +95,8 @@ struct ContentView: View {
 }
 
 
-#Preview {
-    ContentView()
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
 }
